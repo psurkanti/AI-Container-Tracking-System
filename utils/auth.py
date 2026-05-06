@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 import json
+import logging
 import secrets
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
+
+logger = logging.getLogger(__name__)
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 @dataclass
@@ -21,14 +25,30 @@ class User:
 
 
 class AuthService:
-    def __init__(self, user_store_path: str = "data/customer_access.json") -> None:
-        self.user_store_path = Path(user_store_path)
+    def __init__(
+        self,
+        user_store_path: Optional[str | Path] = None,
+    ) -> None:
+        # Resolve against project root so logins work when uvicorn cwd is not the repo root.
+        if user_store_path is None:
+            self.user_store_path = _PROJECT_ROOT / "data" / "customer_access.json"
+        else:
+            raw = Path(user_store_path)
+            self.user_store_path = raw if raw.is_absolute() else (_PROJECT_ROOT / raw)
         self._users = self._load_users()
         self._tokens: dict[str, User] = {}
 
     def _load_users(self) -> dict[str, User]:
         if self.user_store_path.exists():
-            data = json.loads(self.user_store_path.read_text())
+            try:
+                data = json.loads(self.user_store_path.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError) as exc:
+                logger.warning(
+                    "Could not read user store %s; using defaults: %s",
+                    self.user_store_path,
+                    exc,
+                )
+                data = {}
             users: dict[str, User] = {}
             for item in data.get("users", []):
                 raw_csv_names = item.get("csv_customer_names") or []
@@ -80,6 +100,10 @@ class AuthService:
         self.user_store_path.write_text(json.dumps(payload, indent=2))
 
     def login(self, username: str, password: str) -> dict:
+        # Re-read JSON so edits to customer_access.json apply without restarting uvicorn.
+        self._users = self._load_users()
+        username = username.strip()
+        password = password.strip()
         user = self._users.get(username)
         if user is None or user.password != password:
             raise ValueError("Invalid username or password")

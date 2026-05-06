@@ -8,11 +8,14 @@ Production-ready FastAPI system focused on container shipment tracking using par
 - Customer login can view multiple assigned parts with QC status.
 - Tracking response includes `qc_status`.
 
-Default demo users:
-- Admin: `admin` / `admin123`
-- Customer: `customer_prt_a` / `customer123`
-- Additional sample customer: `customer_prt_x` / `customer456`
-- User access is configured in `data/customer_access.json`. **Do not commit real passwords.** Copy `data/customer_access.example.json` → `customer_access.json` locally and customize.
+### Your admin username and password
+1. Open **`data/customer_access.json`** (create it from **`data/customer_access.example.json`** if you do not have one).
+2. Find the user object with **`"role": "admin"`** (or add one).
+3. Set **`username`** and **`password`** to whatever you want — that is what you use on `/admin`.
+4. **Restart the API** after saving the file (`uvicorn` only loads this file at startup; `--reload` does not watch JSON).
+5. **`data/customer_access.json` is gitignored** — do not commit real passwords.
+
+If that file is missing or empty, the app falls back to demo users (e.g. `admin` / `admin123`).
 
 UI pages:
 - Admin page: `/admin`

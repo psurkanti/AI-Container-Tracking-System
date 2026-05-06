@@ -7,22 +7,7 @@ const custUsername = document.getElementById("custUsername");
 const custPassword = document.getElementById("custPassword");
 const custParts = document.getElementById("custParts");
 const custPins = document.getElementById("custPins");
-const mContainerNumber = document.getElementById("mContainerNumber");
-const mPoNumber = document.getElementById("mPoNumber");
-const mPartNumber = document.getElementById("mPartNumber");
-const mSupplierName = document.getElementById("mSupplierName");
-const mQtyOrdered = document.getElementById("mQtyOrdered");
-const mQtyLoaded = document.getElementById("mQtyLoaded");
-const mQtyReceived = document.getElementById("mQtyReceived");
-const mContainerStatus = document.getElementById("mContainerStatus");
-const mEtaDate = document.getElementById("mEtaDate");
-const mArrivalDate = document.getElementById("mArrivalDate");
-const mEstimatedArrivalDate = document.getElementById("mEstimatedArrivalDate");
-const mDestination = document.getElementById("mDestination");
-const mTrackingPin = document.getElementById("mTrackingPin");
-const mQcStatus = document.getElementById("mQcStatus");
 const uploadPanel = document.getElementById("uploadPanel");
-const manualPanel = document.getElementById("manualPanel");
 const customerAccessPanel = document.getElementById("customerAccessPanel");
 
 let authToken = "";
@@ -36,13 +21,12 @@ function setStatus(kind, text) {
 async function login() {
   const fd = new FormData();
   fd.append("username", usernameInput.value.trim());
-  fd.append("password", passwordInput.value);
+  fd.append("password", passwordInput.value.trim());
   const res = await fetch("/auth/login", { method: "POST", body: fd });
   const data = await res.json();
   if (!res.ok) throw new Error(data.detail || "Login failed");
   authToken = data.payload.access_token;
   uploadPanel.style.display = "block";
-  manualPanel.style.display = "block";
   customerAccessPanel.style.display = "block";
 }
 
@@ -99,28 +83,6 @@ async function customersDeleteApi() {
   if (!res.ok) throw new Error(data.detail || "Failed to delete customer");
 }
 
-async function manualSaveApi() {
-  const fd = new FormData();
-  fd.append("auth_token", authToken);
-  fd.append("container_number", mContainerNumber.value.trim());
-  fd.append("po_number", mPoNumber.value.trim());
-  fd.append("part_number", mPartNumber.value.trim());
-  fd.append("supplier_name", mSupplierName.value.trim());
-  fd.append("qty_ordered", mQtyOrdered.value || "0");
-  fd.append("qty_loaded", mQtyLoaded.value || "0");
-  fd.append("qty_received", mQtyReceived.value || "0");
-  fd.append("container_status", mContainerStatus.value.trim());
-  fd.append("eta_date", mEtaDate.value);
-  fd.append("arrival_date", mArrivalDate.value);
-  fd.append("estimated_arrival_date", mEstimatedArrivalDate.value);
-  fd.append("destination", mDestination.value.trim());
-  fd.append("tracking_pin", mTrackingPin.value.trim());
-  fd.append("qc_status", mQcStatus.value.trim() || "Pending");
-  const res = await fetch("/admin/manual-entry", { method: "POST", body: fd });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.detail || "Failed to save manual entry");
-}
-
 document.querySelectorAll("button[data-action]").forEach((button) => {
   button.addEventListener("click", async () => {
     try {
@@ -158,11 +120,6 @@ document.querySelectorAll("button[data-action]").forEach((button) => {
         await customersListApi();
         setStatus("success", "Customer deleted.");
         return;
-      }
-      if (action === "manual-save") {
-        setStatus("progress", "Saving manual entry...");
-        await manualSaveApi();
-        setStatus("success", "Manual entry saved.");
       }
     } catch (err) {
       setStatus("error", err.message);
