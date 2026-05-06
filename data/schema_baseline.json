@@ -1,0 +1,40 @@
+{
+  "columns": [
+    "container_number",
+    "po_number",
+    "part_number",
+    "supplier_name",
+    "qty_ordered",
+    "qty_loaded",
+    "qty_received",
+    "qc_status",
+    "container_status",
+    "eta_date",
+    "arrival_date",
+    "warehouse_delivery_date",
+    "pallet_count",
+    "gross_weight",
+    "cbm",
+    "invoice_value",
+    "duty_amount"
+  ],
+  "dtypes": {
+    "container_number": "object",
+    "po_number": "object",
+    "part_number": "object",
+    "supplier_name": "object",
+    "qty_ordered": "int64",
+    "qty_loaded": "int64",
+    "qty_received": "int64",
+    "qc_status": "object",
+    "container_status": "object",
+    "eta_date": "object",
+    "arrival_date": "object",
+    "warehouse_delivery_date": "object",
+    "pallet_count": "int64",
+    "gross_weight": "int64",
+    "cbm": "int64",
+    "invoice_value": "int64",
+    "duty_amount": "int64"
+  }
+}

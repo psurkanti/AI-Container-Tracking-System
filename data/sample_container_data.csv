@@ -1,0 +1,6 @@
+container_number,po_number,part_number,supplier_name,qty_ordered,qty_loaded,qty_received,qc_status,container_status,eta_date,arrival_date,warehouse_delivery_date,pallet_count,gross_weight,cbm,invoice_value,duty_amount,tracking_pin,current_location,last_arrived_location,estimated_arrival_date
+CON0119,PO1001,PRT-A,Supplier A,100,95,96,,In Transit,2026-05-10,2026-05-09,2026-05-08,10,1200,35,45000,4500,CON0119,Shanghai Port,Singapore Hub,2026-05-10
+CON0119,PO1001,PRT-A,,100,100,110,Approved,Delivered,2026-05-12,2026-05-13,2026-05-14,9,99999,2,1000000,99000,CON0119,Newark Warehouse,Newark Port,2026-05-12
+CON0119,PO7777,PRT-X,Supplier X,88,88,88,Approved,Delivered,2026-05-11,2026-05-11,2026-05-12,4,900,12,22000,1800,CON0777,Hamburg Port,Hamburg Port,2026-05-11
+CON0210,PO2002,PRT-B,Supplier B,220,220,210,Pending,In Transit,2026-05-20,2026-05-19,2026-05-22,12,3500,42,87000,9000,CON0210,Colombo Hub,Chennai Port,2026-05-20
+CON0311,PO3003,PRT-C,Supplier C,150,140,120,Hold,In Customs,2026-05-24,2026-05-23,2026-05-26,8,2800,31,63000,7000,CON0311,Dubai Port,Jebel Ali,2026-05-24

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - AI Powered Supply Chain Container Tracking System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/ui/static/dashboard.css" />
+</head>
+<body>
+  <main class="page-wrap content">
+    <section class="page-header">
+      <div>
+        <h1>Admin Operations</h1>
+        <p>Manage access, upload shipment data, and maintain customer tracking readiness.</p>
+      </div>
+      <span class="badge">Admin</span>
+    </section>
+
+    <section class="panel">
+      <h3>Admin Login</h3>
+      <div class="input-grid">
+        <label>Username<input id="username" type="text" value="admin" /></label>
+        <label>Password<input id="password" type="password" value="admin123" /></label>
+      </div>
+      <div class="actions"><button data-action="login">Login</button></div>
+      <div id="statusBar" class="status idle" style="display:none;"></div>
+    </section>
+
+    <section id="uploadPanel" class="panel" style="display:none;">
+      <h3>Upload Data</h3>
+      <div class="input-grid">
+        <label>Upload CSV<input id="fileInput" type="file" accept=".csv" /></label>
+      </div>
+      <div class="actions">
+        <button data-action="upload">Upload Data</button>
+      </div>
+    </section>
+
+    <section id="manualPanel" class="panel" style="display:none;">
+      <h3>Manual Data Entry</h3>
+      <div class="input-grid">
+        <label>Container Number<input id="mContainerNumber" type="text" value="" placeholder="Enter container number" /></label>
+        <label>PO Number<input id="mPoNumber" type="text" value="" placeholder="Enter PO number" /></label>
+        <label>Part Number<input id="mPartNumber" type="text" value="" placeholder="Enter part number" /></label>
+        <label>Supplier Name<input id="mSupplierName" type="text" value="" placeholder="Enter supplier name" /></label>
+        <label>Quantity Ordered<input id="mQtyOrdered" type="number" value="" placeholder="0" /></label>
+        <label>Quantity Loaded<input id="mQtyLoaded" type="number" value="" placeholder="0" /></label>
+        <label>Quantity Received<input id="mQtyReceived" type="number" value="" placeholder="0" /></label>
+        <label>Container Status<input id="mContainerStatus" type="text" value="" placeholder="In Transit / Delivered" /></label>
+        <label>ETA Date<input id="mEtaDate" type="date" value="" /></label>
+        <label>Arrival Date<input id="mArrivalDate" type="date" value="" /></label>
+        <label>Estimated Arrival Date<input id="mEstimatedArrivalDate" type="date" value="" /></label>
+        <label>Destination<input id="mDestination" type="text" value="" placeholder="Enter destination" /></label>
+        <label>Tracking Pin<input id="mTrackingPin" type="text" value="" placeholder="Enter tracking pin" /></label>
+        <label>QC Status<input id="mQcStatus" type="text" value="" placeholder="Pending / Approved / Hold" /></label>
+      </div>
+      <div class="actions">
+        <button data-action="manual-save">Save Manual Entry</button>
+      </div>
+    </section>
+
+    <section id="customerAccessPanel" class="panel" style="display:none;">
+      <h3>Customer Access Management</h3>
+      <div class="input-grid">
+        <label>Customer Username<input id="custUsername" type="text" value="" placeholder="Enter customer username" /></label>
+        <label>Customer Password<input id="custPassword" type="password" value="" placeholder="Enter customer password" /></label>
+        <label>Allowed Part Numbers (comma-separated)<input id="custParts" type="text" value="" placeholder="PRT-A,PRT-B" /></label>
+        <label>Allowed Tracking Pins (comma-separated)<input id="custPins" type="text" value="" placeholder="CON0119,CON0210" /></label>
+      </div>
+      <div class="actions">
+        <button data-action="customers-list">View Customers</button>
+        <button data-action="customers-upsert">Save Customer Access</button>
+        <button data-action="customers-delete">Delete Customer</button>
+      </div>
+      <div id="customersList" class="issue-list"></div>
+    </section>
+  </main>
+  <script src="/ui/static/admin.js"></script>
+</body>
+</html>

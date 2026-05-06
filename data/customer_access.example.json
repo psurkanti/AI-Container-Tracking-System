@@ -1,0 +1,21 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "password": "change-me-strong-password",
+      "role": "admin",
+      "allowed_part_number": null,
+      "allowed_tracking_pin": null,
+      "allowed_part_numbers": [],
+      "allowed_tracking_pins": []
+    },
+    {
+      "username": "customer_demo",
+      "password": "change-me-customer-password",
+      "role": "customer",
+      "csv_customer_names": [],
+      "allowed_part_numbers": ["PRT-A"],
+      "allowed_tracking_pins": ["CON0119"]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer - AI Powered Supply Chain Container Tracking System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/ui/static/dashboard.css" />
+</head>
+<body>
+  <main class="page-wrap content">
+    <section class="panel">
+      <h3>Customer Login</h3>
+      <div class="input-grid">
+        <label>Username<input id="username" type="text" value="" placeholder="Enter username" /></label>
+        <label>Password<input id="password" type="password" value="" placeholder="Enter password" /></label>
+      </div>
+      <div class="actions">
+        <button data-action="login">Login</button>
+      </div>
+      <div id="loginStatusBar" class="status idle" style="display:none;"></div>
+    </section>
+
+    <section id="containersPanel" class="panel" style="display:none;">
+      <h3>My Containers</h3>
+      <div class="search-bar">
+        <label class="search-field">Search by part number<input id="partSearchInput" type="search" placeholder="Enter part number (full or partial)" autocomplete="off" /></label>
+        <div class="search-actions">
+          <button type="button" data-action="part-search">Search</button>
+          <button type="button" data-action="part-search-clear" class="secondary">Show all</button>
+        </div>
+      </div>
+      <div id="trackStatusBar" class="status idle" style="display:none;"></div>
+      <div id="resultsList" class="issue-list" style="margin-top: 12px;"></div>
+    </section>
+  </main>
+  <script src="/ui/static/customer.js"></script>
+</body>
+</html>
