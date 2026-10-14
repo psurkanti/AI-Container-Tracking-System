@@ -32,10 +32,20 @@
           <button type="button" data-action="part-search-clear" class="secondary">Show all</button>
         </div>
       </div>
+      <div class="destination-filter" id="destinationFilter">
+        <div class="destination-filter-head">
+          <h4>Destinations</h4>
+          <button type="button" data-action="destination-clear" class="secondary" id="destinationClear" hidden>Clear destination</button>
+        </div>
+        <p class="panel-note">Click a destination to filter the list. Click it again to show every destination.</p>
+        <div id="destinationList" class="destination-list"></div>
+        <p id="shipmentMatchCount" class="panel-note"></p>
+      </div>
       <div id="trackStatusBar" class="status idle" style="display:none;"></div>
       <div id="resultsList" class="issue-list" style="margin-top: 12px;"></div>
     </section>
   </main>
+  <script src="/ui/static/shipmentFilters.js"></script>
   <script src="/ui/static/customer.js"></script>
 </body>
 </html>
