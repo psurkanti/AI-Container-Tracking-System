@@ -27,22 +27,22 @@ app.mount("/reporting/output", StaticFiles(directory=str(base_dir / "reporting" 
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    return templates.TemplateResponse(request, "dashboard.html")
 
 
 @app.get("/")
 def root(request: Request):
-    return templates.TemplateResponse("customer.html", {"request": request})
+    return templates.TemplateResponse(request, "customer.html")
 
 
 @app.get("/admin", response_class=HTMLResponse)
 def admin_page(request: Request):
-    return templates.TemplateResponse("admin.html", {"request": request})
+    return templates.TemplateResponse(request, "admin.html")
 
 
 @app.get("/customer", response_class=HTMLResponse)
 def customer_page(request: Request):
-    return templates.TemplateResponse("customer.html", {"request": request})
+    return templates.TemplateResponse(request, "customer.html")
 
 
 @app.get("/health", response_class=JSONResponse)

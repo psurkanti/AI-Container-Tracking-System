@@ -5,10 +5,17 @@ const passwordInput = document.getElementById("password");
 const partSearchInput = document.getElementById("partSearchInput");
 const resultsList = document.getElementById("resultsList");
 const containersPanel = document.getElementById("containersPanel");
+const destinationList = document.getElementById("destinationList");
+const destinationClear = document.getElementById("destinationClear");
+const shipmentMatchCount = document.getElementById("shipmentMatchCount");
 
 let authToken = "";
 /** @type {Array<Record<string, unknown>>} */
 let allCustomerRecords = [];
+/** Applied part-number search. Never written from a destination click. */
+let appliedPartQuery = "";
+/** @type {string | null} */
+let selectedDestination = null;
 
 async function parseApiResponse(res) {
   const raw = await res.text();
@@ -45,7 +52,7 @@ function displayVal(v) {
 function filterRecordsByPartQuery(records, query) {
   const q = query.trim().toLowerCase();
   if (!q) return [];
-  return records.filter((r) => displayVal(r.part_number).toLowerCase().includes(q));
+  return ShipmentFilters.recordsForDestinationList(records, q);
 }
 
 function setStatus(kind, text) {
@@ -72,6 +79,10 @@ function partCardHtml(r) {
 }
 
 function renderRecords(records, emptyMessage = "No authorized parts found.") {
+  if (shipmentMatchCount) {
+    const total = allCustomerRecords.length;
+    shipmentMatchCount.textContent = `${records.length} of ${total} shipments match your filters`;
+  }
   if (!records.length) {
     resultsList.innerHTML = `<article class='issue-card medium'><div>${emptyMessage}</div></article>`;
     return;
@@ -96,8 +107,68 @@ async function loadMyContainers() {
   const data = await parseApiResponse(res);
   if (!res.ok) throw new Error(data.detail || "Failed to load containers");
   allCustomerRecords = data.payload?.records || [];
+  appliedPartQuery = "";
+  selectedDestination = null;
   if (partSearchInput) partSearchInput.value = "";
-  renderRecords(allCustomerRecords);
+  renderView();
+}
+
+function renderDestinationOptions(options) {
+  if (!destinationList) return;
+  destinationList.replaceChildren();
+  if (!options.length) {
+    const empty = document.createElement("p");
+    empty.className = "panel-note";
+    empty.textContent = "No destinations in the current results.";
+    destinationList.appendChild(empty);
+  } else {
+    for (const option of options) {
+      const active = selectedDestination && option.name.toLowerCase() === selectedDestination.toLowerCase();
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = active ? "destination-chip active" : "destination-chip secondary";
+      button.dataset.destination = option.name;
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+      button.setAttribute(
+        "aria-label",
+        active ? `Clear ${option.name} filter` : `Show ${option.name} shipments`
+      );
+      const name = document.createElement("span");
+      name.textContent = option.name;
+      const count = document.createElement("span");
+      count.className = "count";
+      count.textContent = String(option.count);
+      button.append(name, count);
+      if (active) {
+        const clearMark = document.createElement("span");
+        clearMark.className = "chip-clear";
+        clearMark.setAttribute("aria-hidden", "true");
+        clearMark.textContent = "×";
+        button.append(clearMark);
+      }
+      destinationList.appendChild(button);
+    }
+  }
+  if (destinationClear) destinationClear.hidden = !selectedDestination;
+}
+
+function renderView(emptyMessage) {
+  const base = ShipmentFilters.recordsForDestinationList(allCustomerRecords, appliedPartQuery);
+  const options = ShipmentFilters.ensureSelectedListed(
+    ShipmentFilters.destinationOptions(base),
+    selectedDestination
+  );
+  renderDestinationOptions(options);
+  const visible = ShipmentFilters.filterByDestination(base, selectedDestination);
+  const message = emptyMessage || (selectedDestination
+    ? "No shipments for that destination."
+    : "No authorized parts found.");
+  renderRecords(visible, message);
+}
+
+function selectDestination(name) {
+  selectedDestination = ShipmentFilters.toggleDestination(selectedDestination, name);
+  renderView();
 }
 
 async function login() {
@@ -126,8 +197,9 @@ function runPartSearch() {
     setStatus("error", "Enter a part number to search.");
     return;
   }
+  appliedPartQuery = q;
   const matches = filterRecordsByPartQuery(allCustomerRecords, q);
-  renderRecords(matches, "No matching parts for that search.");
+  renderView(matches.length ? undefined : "No matching parts for that search.");
   if (matches.length) {
     hideTrackStatus();
   } else {
@@ -136,9 +208,15 @@ function runPartSearch() {
 }
 
 function clearPartSearch() {
+  appliedPartQuery = "";
   if (partSearchInput) partSearchInput.value = "";
-  renderRecords(allCustomerRecords);
+  renderView();
   hideTrackStatus();
+}
+
+function clearDestinationFilter() {
+  selectedDestination = null;
+  renderView();
 }
 
 document.querySelectorAll("button[data-action]").forEach((button) => {
@@ -161,6 +239,10 @@ document.querySelectorAll("button[data-action]").forEach((button) => {
         clearPartSearch();
         return;
       }
+      if (action === "destination-clear") {
+        clearDestinationFilter();
+        return;
+      }
     } catch (err) {
       if (!authToken) {
         setLoginStatus("error", err.message);
@@ -170,6 +252,14 @@ document.querySelectorAll("button[data-action]").forEach((button) => {
     }
   });
 });
+
+if (destinationList) {
+  destinationList.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-destination]");
+    if (!button) return;
+    selectDestination(button.dataset.destination || "");
+  });
+}
 
 if (partSearchInput) {
   partSearchInput.addEventListener("keydown", (e) => {
